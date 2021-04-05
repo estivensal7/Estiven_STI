@@ -1,17 +1,23 @@
 <template>
 	<b-card
+		class="mb-2 all-products-card h-100"
 		:title="`${product.name}`"
 		:img-src="`${product.images[0].urls.sm}`"
 		:img-alt="`${product.name} Image`"
 		img-top
 		style="max-width: 20rem;"
-		class="mb-2 h-100 all-products-card"
 	>
 		<b-card-text>
 			{{ product.description.substring(0, 99) + "..." }}
 		</b-card-text>
 
-		<b-button href="#" variant="primary">Go somewhere</b-button>
+		<b-link
+			:to="`/single-product-page/${product.slug}`"
+			class="more-details-button"
+			variant="secondary"
+		>
+			View More Details
+		</b-link>
 	</b-card>
 </template>
 
@@ -21,3 +27,20 @@
 		props: ["product"],
 	};
 </script>
+
+<style scoped>
+	.more-details-button {
+		color: white;
+		background-color: #444;
+		padding: 7.5px;
+		border-radius: 2px;
+	}
+
+	.card-title {
+		min-height: 80px;
+	}
+
+	.card-text {
+		min-height: 140px;
+	}
+</style>

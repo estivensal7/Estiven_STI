@@ -1,12 +1,19 @@
 <template>
 	<div id="app">
-		<div id="nav">
-			<router-link to="/">All Products</router-link> |
-			<router-link to="/single-product-page">Single Product</router-link>
-		</div>
+		<Header />
 		<router-view />
 	</div>
 </template>
+
+<script>
+	import Header from "./components/layout/Header";
+
+	export default {
+		components: {
+			Header,
+		},
+	};
+</script>
 
 <style>
 	#app {
