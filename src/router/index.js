@@ -13,7 +13,7 @@ const routes = [
 		component: AllProductsPage,
 	},
 	{
-		path: "/single-product-page",
+		path: "/single-product-page/:slug",
 		name: "SingleProductPage",
 		component: SingleProductPage,
 	},
