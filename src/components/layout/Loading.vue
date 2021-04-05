@@ -1,4 +1,5 @@
 <template>
+	<!-- The Loading component will be dynamically rendered within its parent compoents -->
 	<div class="text-center loading-spinner-div">
 		<b-spinner type="grow" label="Spinning" class="loading-spinner"></b-spinner>
 	</div>

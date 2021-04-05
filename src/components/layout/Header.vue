@@ -22,7 +22,7 @@
 				></b-navbar-toggle>
 
 				<b-collapse id="nav-collapse" is-nav v-if="showLink">
-					<!-- Right aligned nav items -->
+					<!-- This link will be aligned to the right of the Header component -->
 					<b-navbar-nav class="ml-auto">
 						<b-nav-item href="/">Back To All Products</b-nav-item>
 					</b-navbar-nav>
@@ -37,10 +37,11 @@
 		name: "Header",
 		data() {
 			return {
-				showLink: false,
+				showLink: false, //We will dynamically render the links based on this value. If the user is at the AllProductsPage, it will not render. If the user if at the SingleProductPage, it will render.
 			};
 		},
 		watch: {
+			// Checking the $route object for the value of the current path to assist in dynamically rendering the navigation link(s)
 			$route: function() {
 				this.$route.path === "/"
 					? (this.showLink = false)

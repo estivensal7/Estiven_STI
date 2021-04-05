@@ -1,5 +1,6 @@
 <template>
 	<b-row>
+		<!-- Filter to select how many products to load per page -->
 		<b-col>
 			<div>
 				<b-form-select
@@ -12,6 +13,7 @@
 			</div>
 		</b-col>
 
+		<!-- Filter to select by which value the products should be loaded (Name, Popularity)-->
 		<b-col>
 			<div>
 				<b-form-select
@@ -23,6 +25,7 @@
 			</div>
 		</b-col>
 
+		<!-- Filter to select in which order the products should be loaded (Ascending, Descending) -->
 		<b-col>
 			<div>
 				<b-form-select
@@ -64,6 +67,7 @@
 			};
 		},
 		methods: {
+			// This method updates the filter values once a change is registered
 			changeFilterValuesHandler() {
 				const filterOptions = {
 					productsPerPage: this.productsPerPage,
@@ -71,6 +75,7 @@
 					sortOrder: this.sortOrder,
 				};
 
+				// $eemitting the filterOptions up to the parent component
 				this.$emit("filter-change", filterOptions);
 			},
 		},

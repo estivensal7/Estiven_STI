@@ -1,8 +1,12 @@
 <template>
 	<b-container class="single-products-page">
+		<!-- Loading Component will be rendered if 'isLoading' is set to true -->
 		<Loading v-if="isLoading" />
+
+		<!-- Top Section of the page, will be rendered if we have product data from the API -->
 		<b-row v-if="product">
 			<b-col cols="12" sm="12" md="6" lg="6">
+				<!-- Carousel Component -->
 				<b-carousel
 					id="carousel-1"
 					v-model="slide"
@@ -24,12 +28,14 @@
 			</b-col>
 			<b-col>
 				<b-row>
+					<!-- Brand Logo Image -->
 					<b-col cols="12" sm="4" md="3" lg="3" class="my-1">
 						<img
 							:src="images[1].urls.sm"
 							class="single-product-page-logo-image"
 						/>
 					</b-col>
+					<!-- Product Name/Title Component -->
 					<b-col align-self="center">
 						<h4 cols="12" sm="8" md="9" lg="9" class="my-1">
 							{{ product.name }}
@@ -37,11 +43,13 @@
 					</b-col>
 				</b-row>
 				<b-row>
+					<!-- Product Description Component -->
 					<b-col cols="12" class="my-1">
 						<p class="product-description">{{ product.description }}</p>
 					</b-col>
 				</b-row>
 				<b-row>
+					<!-- Features component -->
 					<b-col cols="12" class="my-2">
 						<h4>Features</h4>
 						<ul class="product-features-ul" align="left">
@@ -58,6 +66,7 @@
 			</b-col>
 		</b-row>
 
+		<!-- Bottom Section of the page (Ordering Information), will be rendered if we have product data from the API -->
 		<h4 class="my-3">Ordering Information</h4>
 		<b-row v-if="product">
 			<b-col col="12" class="my-3">
@@ -70,6 +79,7 @@
 <script>
 	import axios from "axios";
 
+	// Importing Component(s)
 	import Loading from "../components/layout/Loading";
 
 	export default {
@@ -92,14 +102,16 @@
 			};
 		},
 		async created() {
-			await this.fetchProductDetailsFromAPI();
+			await this.fetchProductDetailsFromAPI(); //Load data on component-created
 		},
 		watch: {
 			$route: "fetchAllProductsFromAPI",
-			product: "updateCarouselImages",
+			product: "updateCarouselImages", //watch for changes in the product state, then update the carouselImages state
 		},
 		methods: {
+			// Initial fetch for products from API
 			async fetchProductDetailsFromAPI() {
+				// Show the Loading Component
 				this.isLoading = true;
 
 				axios
@@ -108,11 +120,14 @@
 					)
 					.then((res) => {
 						const data = res.data.data;
+
+						// setting state values once data is loaded
 						this.product = data;
 						this.orderingItems = data.ordering_items;
 						this.images = data.images;
-						this.isLoading = false;
-						this.refineOrderingItemObjects();
+
+						this.isLoading = false; // Hide the Loading Component
+						this.refineOrderingItemObjects(); //Refining ordering information objects for proper table listing
 					})
 					.catch((err) => (this.error = err));
 			},
@@ -126,6 +141,7 @@
 
 				this.carouselImages = tempCarouselImgArray;
 			},
+			// Method to refine order information objects, the refined objects will be used to render the table
 			refineOrderingItemObjects() {
 				let newOrderRow = {
 					catalog_number: "",
@@ -161,6 +177,7 @@
 					};
 				}
 			},
+			// Carousel control handlers
 			onSlideStart() {
 				this.sliding = true;
 			},

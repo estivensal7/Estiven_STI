@@ -6,6 +6,7 @@
 </template>
 
 <script>
+	// The Header component is displayed on all pages
 	import Header from "./components/layout/Header";
 
 	export default {
@@ -31,9 +32,5 @@
 	#nav a {
 		font-weight: bold;
 		color: #2c3e50;
-	}
-
-	#nav a.router-link-exact-active {
-		color: #42b983;
 	}
 </style>

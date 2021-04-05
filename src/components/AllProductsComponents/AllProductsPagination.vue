@@ -18,6 +18,7 @@
 			};
 		},
 		methods: {
+			// $eemitting the currentPage value up to the parent component
 			emitPageChange() {
 				this.$emit("update-page", this.currentPage);
 			},

@@ -7,10 +7,12 @@
 		img-top
 		style="max-width: 20rem;"
 	>
+		<!-- Product Description is cut off at 100 characters -->
 		<b-card-text>
 			{{ product.description.substring(0, 99) + "..." }}
 		</b-card-text>
 
+		<!-- 'View More Details' Button redirects to SingleProductPage -->
 		<b-link
 			:to="`/single-product-page/${product.slug}`"
 			class="more-details-button"

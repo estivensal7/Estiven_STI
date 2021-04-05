@@ -1,7 +1,10 @@
 <template>
 	<b-container class="all-products-page">
+		<!-- Loading Component will be rendered if 'isLoading' is set to true -->
 		<Loading v-if="isLoading" />
+
 		<b-row class="my-4">
+			<!-- Search Input Component -->
 			<b-col sm="6">
 				<b-form-input
 					size="sm"
@@ -11,10 +14,14 @@
 					name="search"
 				></b-form-input>
 			</b-col>
+
+			<!-- Filter Options Component -->
 			<b-col sm="6" class="my-0">
 				<AllProductsFilterOptions v-on:filter-change="updateFilters" />
 			</b-col>
 		</b-row>
+
+		<!-- Product Cards -->
 		<b-row>
 			<b-col
 				class="product-card-column"
@@ -29,6 +36,8 @@
 				<AllProductsCard v-bind:product="product" />
 			</b-col>
 		</b-row>
+
+		<!-- Pagination Component -->
 		<b-row>
 			<b-col class="my-3" v-if="loadPagination">
 				<b-pagination
@@ -74,11 +83,11 @@
 			};
 		},
 		async created() {
-			await this.fetchAllProductsFromAPI();
+			await this.fetchAllProductsFromAPI(); //Load data on component-created
 		},
 		watch: {
 			$route: "fetchAllProductsFromAPI",
-			searchByValue: "fetchProductsBySearchValue",
+			searchByValue: "fetchProductsBySearchValue", //watch for changes in the searchByValue state, then update the fecth products from API based on the selected parameters
 		},
 		methods: {
 			async fetchAllProductsFromAPI() {
@@ -87,18 +96,24 @@
 					.get(this.baseAPIUrl + "&limit=10&load[]=images")
 					.then((res) => {
 						const data = res.data.data;
+
+						// setting state values once data is loaded
 						this.products = data;
 						this.baseAPIUrl = "https://api.stifirestop.com/products?";
-						this.prevAPIUrl = "https://api.stifirestop.com/products?";
-						this.loadPagination = true;
-						this.isLoading = false;
+						this.prevAPIUrl = "https://api.stifirestop.com/products?"; //prev API will be used to persist filter options after a search is completed
+
+						this.loadPagination = true; // Show the Pagination Component
+						this.isLoading = false; // Hide the Loading Component
 					})
 					.catch((err) => (this.error = err));
 			},
+			// Fetching products by search value, this request will run when the Search input changes
 			fetchProductsBySearchValue() {
+				// Constructing API Path
 				this.baseAPIUrl += `&search=${this.searchByValue}`;
+
 				this.prevAPIUrl = this.baseAPIUrl;
-				this.isLoading = true;
+				this.isLoading = true; //Showing Loading component
 
 				axios
 					.get(this.baseAPIUrl + "&load[]=images")
@@ -112,6 +127,7 @@
 					.catch((err) => (this.error = err));
 			},
 
+			// this function receives parameters from the AllProductsFilterOptions component which are $emitted up when there is a change in the child components's state
 			updateFilters(filterOptions) {
 				const { productsPerPage, sortBy, sortOrder } = filterOptions;
 				this.limitPerPageValue =
@@ -145,6 +161,8 @@
 					})
 					.catch((err) => (this.error = err));
 			},
+
+			// Utilized in the pagination component, we retrieve the previous API url to persist the filters, and return the desired page of data from the API
 			fetchProductsByPage() {
 				this.isLoading = true;
 
