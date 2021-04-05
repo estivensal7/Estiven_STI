@@ -7,7 +7,7 @@
 					:options="productsPerPageOptions"
 					size="sm"
 					class="mt-3 w-100"
-					label="0"
+					label=""
 				></b-form-select>
 			</div>
 		</b-col>
@@ -57,7 +57,7 @@
 				],
 				sortOrder: false,
 				sortOrderOptions: [
-					{ value: "asc", text: "Sort Order" },
+					{ value: false, text: "Sort Order" },
 					{ value: "asc", text: "Ascending" },
 					{ value: "desc", text: "Descending" },
 				],

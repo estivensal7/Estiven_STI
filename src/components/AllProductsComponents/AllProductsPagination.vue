@@ -1,8 +1,9 @@
 <template>
 	<b-pagination
 		v-model="currentPage"
+		:total-rows="64"
 		:per-page="perPage"
-		:total-rows="rows"
+		align="center"
 	></b-pagination>
 </template>
 
@@ -12,13 +13,13 @@
 		props: ["currentPageValue", "limitPerPageValue"],
 		data() {
 			return {
-				currentPage: 1,
-				perPage: 10,
+				currentPage: this.currentPageValue,
+				perPage: this.limitPerPageValue,
 			};
 		},
-		computed: {
-			rows() {
-				return Math.ceil(64 / this.perPage);
+		methods: {
+			emitPageChange() {
+				this.$emit("update-page", this.currentPage);
 			},
 		},
 	};

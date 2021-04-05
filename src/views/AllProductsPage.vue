@@ -1,5 +1,6 @@
 <template>
 	<b-container class="all-products-page">
+		<Loading v-if="isLoading" />
 		<b-row class="my-4">
 			<b-col sm="6">
 				<b-form-input
@@ -29,7 +30,15 @@
 			</b-col>
 		</b-row>
 		<b-row>
-			<AllProductsPagination v-bind:currentPageValue="currentPage" />
+			<b-col class="my-3" v-if="loadPagination">
+				<b-pagination
+					v-model="currentPage"
+					:total-rows="totalRows"
+					:per-page="limitPerPageValue"
+					align="center"
+					v-on:input="fetchProductsByPage"
+				></b-pagination>
+			</b-col>
 		</b-row>
 	</b-container>
 </template>
@@ -37,15 +46,15 @@
 <script>
 	import axios from "axios";
 	import AllProductsCard from "../components/AllProductsComponents/AllProductsCard";
-	import AllProductsPagination from "../components/AllProductsComponents/AllProductsPagination";
 	import AllProductsFilterOptions from "../components/AllProductsComponents/AllProductsFilterOptions";
+	import Loading from "../components/layout/Loading";
 
 	export default {
 		name: "AllProductsPage",
 		components: {
 			AllProductsCard,
-			AllProductsPagination,
 			AllProductsFilterOptions,
+			Loading,
 		},
 		data() {
 			return {
@@ -53,12 +62,15 @@
 				products: null,
 				error: null,
 				baseAPIUrl: "https://api.stifirestop.com/products?",
-				loadImagesParameter: "load[]=images",
-				currentPage: 1,
+				prevAPIUrl: "",
 				sortByValue: "",
 				sortOrderValue: "asc",
-				limitPerPageValue: false,
+				limitPerPageValue: "15",
 				searchByValue: null,
+				loadPagination: false,
+				currentPage: 1,
+				totalRows: 64,
+				isLoading: true,
 			};
 		},
 		async created() {
@@ -70,22 +82,32 @@
 		},
 		methods: {
 			async fetchAllProductsFromAPI() {
+				this.isLoading = true;
 				axios
-					.get(this.baseAPIUrl + "&load[]=images")
+					.get(this.baseAPIUrl + "&limit=10&load[]=images")
 					.then((res) => {
-						this.products = res.data.data;
+						const data = res.data.data;
+						this.products = data;
 						this.baseAPIUrl = "https://api.stifirestop.com/products?";
+						this.prevAPIUrl = "https://api.stifirestop.com/products?";
+						this.loadPagination = true;
+						this.isLoading = false;
 					})
 					.catch((err) => (this.error = err));
 			},
 			fetchProductsBySearchValue() {
 				this.baseAPIUrl += `&search=${this.searchByValue}`;
+				this.prevAPIUrl = this.baseAPIUrl;
+				this.isLoading = true;
 
 				axios
 					.get(this.baseAPIUrl + "&load[]=images")
 					.then((res) => {
-						this.products = res.data.data;
+						const data = res.data.data;
+						this.products = data;
 						this.baseAPIUrl = "https://api.stifirestop.com/products?";
+
+						this.isLoading = false;
 					})
 					.catch((err) => (this.error = err));
 			},
@@ -109,11 +131,36 @@
 					this.baseAPIUrl += `&limit=${this.limitPerPageValue}`;
 				}
 
+				this.isLoading = true;
+
 				axios
 					.get(this.baseAPIUrl + "&load[]=images")
 					.then((res) => {
-						this.products = res.data.data;
+						const data = res.data.data;
+						this.products = data;
+						this.prevAPIUrl = this.baseAPIUrl;
 						this.baseAPIUrl = "https://api.stifirestop.com/products?";
+
+						this.isLoading = false;
+					})
+					.catch((err) => (this.error = err));
+			},
+			fetchProductsByPage() {
+				this.isLoading = true;
+
+				const refinedAPIUrl =
+					this.prevAPIUrl === "https://api.stifirestop.com/products?"
+						? this.prevAPIUrl + `page=${this.currentPage}&load[]=images`
+						: this.prevAPIUrl + `&page=${this.currentPage}&load[]=images`;
+
+				axios
+					.get(refinedAPIUrl)
+					.then((res) => {
+						const data = res.data.data;
+						this.products = data;
+
+						this.prevAPIUrl = refinedAPIUrl;
+						this.isLoading = false;
 					})
 					.catch((err) => (this.error = err));
 			},
